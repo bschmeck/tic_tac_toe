@@ -24,4 +24,21 @@ defmodule TicTacToeTest do
     {:ok, board} = TicTacToe.start |> TicTacToe.claim(loc, :x)
     assert {:error, board} == TicTacToe.claim(board, loc, :o)
   end
+
+  test "a board with blank locations is not a cat's game" do
+    board = {:x, :x, :o, :o, :x, :o, :x, :o, :blank}
+    refute TicTacToe.cats_game?(board)
+  end
+
+  test "a winning board is not a cat's game" do
+    board = {:x, :x, :o, :o, :x, :o, :x, :o, :o}
+    assert TicTacToe.winner(board)
+    refute TicTacToe.cats_game?(board)
+  end
+
+  test "a cat's game is a cat's game" do
+    board = {:x, :x, :o, :o, :o, :x, :x, :o, :x}
+    refute TicTacToe.winner(board)
+    assert TicTacToe.cats_game?(board)
+  end
 end
