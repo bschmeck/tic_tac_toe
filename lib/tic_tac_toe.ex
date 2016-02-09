@@ -27,6 +27,8 @@ defmodule TicTacToe do
               x, _, _}) when x != :blank, do: x
   def winner(_board), do: nil
 
+  def won?(board), do: winner(board) != nil
+  
   def cats_game?(board) do
     if winner(board) do
       false
@@ -36,7 +38,7 @@ defmodule TicTacToe do
   end
 
   def game_over?(board) do
-    winner(board) != nil
+    won?(board) or cats_game?(board)
   end
 
   def blank?(board, {x, y}) do

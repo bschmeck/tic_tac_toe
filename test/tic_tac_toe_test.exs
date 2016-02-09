@@ -41,4 +41,10 @@ defmodule TicTacToeTest do
     refute TicTacToe.winner(board)
     assert TicTacToe.cats_game?(board)
   end
+
+  test "cat's games are over" do
+    board = {:x, :x, :o, :o, :o, :x, :x, :o, :x}
+    assert TicTacToe.cats_game?(board)
+    assert TicTacToe.game_over?(board)
+  end
 end
