@@ -51,13 +51,10 @@ defmodule TicTacToe do
     get_mark_at(game, {x, y}) == :blank
   end
 
-  def claim(game, {x, y}) do
+  def claim(%Game{turn: :x} = game, {x, y}), do: claim(game, {x, y}, :o)
+  def claim(%Game{turn: :o} = game, {x, y}), do: claim(game, {x, y}, :x)
+  def claim(game, {x, y}, next_turn) do
     if blank?(game, {x, y}) do
-      next_turn = if game.turn == :x do
-        :o
-      else
-        :x
-      end
       game = %Game{ set_mark_at(game, {x, y}, game.turn) | turn: next_turn}
       
       {:ok, game}
