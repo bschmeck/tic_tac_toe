@@ -47,15 +47,15 @@ defmodule TicTacToe do
     won?(game) or cats_game?(game)
   end
 
-  def blank?(game, {x, y}) do
-    get_mark_at(game, {x, y}) == :blank
+  def blank?(game, {_, _} = loc) do
+    get_mark_at(game, loc) == :blank
   end
 
-  def claim(%Game{turn: :x} = game, {x, y}), do: claim(game, {x, y}, :o)
-  def claim(%Game{turn: :o} = game, {x, y}), do: claim(game, {x, y}, :x)
-  def claim(game, {x, y}, next_turn) do
-    if blank?(game, {x, y}) do
-      game = %Game{ set_mark_at(game, {x, y}, game.turn) | turn: next_turn}
+  def claim(%Game{turn: :x} = game, {_, _} = loc), do: claim(game, loc, :o)
+  def claim(%Game{turn: :o} = game, {_, _} = loc), do: claim(game, loc, :x)
+  def claim(game, {_, _} = loc, next_turn) do
+    if blank?(game, loc) do
+      game = %Game{ set_mark_at(game, loc, game.turn) | turn: next_turn}
       
       {:ok, game}
     else
