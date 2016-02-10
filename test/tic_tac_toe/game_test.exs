@@ -20,6 +20,14 @@ defmodule TicTacToe.GameTest do
     refute Game.blank?(game, loc)
   end
 
+  test "claiming a spot changes the next mark to be placed" do
+    loc = { 1, 1 }
+    game = Game.start
+    first_mark = game.turn
+    {:ok, game} = game |> Game.claim(loc)
+    assert game.turn != first_mark
+  end
+
   test "a previously claimed spot cannot be claimed" do
     loc = {1, 0}
     {:ok, game} = Game.start |> Game.claim(loc)
