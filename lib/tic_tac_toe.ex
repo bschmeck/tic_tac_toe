@@ -63,18 +63,18 @@ defmodule TicTacToe do
     end
   end
 
-  def locations(game) do
-    range = 0..(game.dimension - 1)
+  def locations(%Game{dimension: dimension}) do
+    range = 0..(dimension - 1)
     Enum.flat_map(range, fn(x) -> Enum.map(range, fn(y) -> {x, y} end) end)
   end
 
-  defp get_mark_at(game, {x, y}) do
-    index = x * game.dimension + y
-    elem(game.board, index)
+  defp get_mark_at(%Game{board: board, dimension: dimension}, {x, y}) do
+    index = x * dimension + y
+    elem(board, index)
   end
 
-  defp set_mark_at(game, {x, y}, mark) do
-    index = x * game.dimension + y
-    %Game{game | board: put_elem(game.board, index, mark)}
+  defp set_mark_at(%Game{board: board, dimension: dimension} = game, {x, y}, mark) do
+    index = x * dimension + y
+    %Game{game | board: put_elem(board, index, mark)}
   end
 end
