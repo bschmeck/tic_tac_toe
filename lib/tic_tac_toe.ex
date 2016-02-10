@@ -47,13 +47,13 @@ defmodule TicTacToe do
     won?(game) or cats_game?(game)
   end
 
-  def blank?(game, {_, _} = loc) do
+  def blank?(game, loc) when tuple_size(loc) == 2 do
     get_mark_at(game, loc) == :blank
   end
 
-  def claim(%Game{turn: :x} = game, {_, _} = loc), do: claim(game, loc, :o)
-  def claim(%Game{turn: :o} = game, {_, _} = loc), do: claim(game, loc, :x)
-  def claim(game, {_, _} = loc, next_turn) do
+  def claim(%Game{turn: :x} = game, loc) when tuple_size(loc) == 2, do: claim(game, loc, :o)
+  def claim(%Game{turn: :o} = game, loc) when tuple_size(loc) == 2, do: claim(game, loc, :x)
+  defp claim(game, loc, next_turn) do
     if blank?(game, loc) do
       game = %Game{ set_mark_at(game, loc, game.turn) | turn: next_turn}
       
