@@ -15,14 +15,14 @@ defmodule TicTacToeTest do
 
   test "after claiming, a spot is not blank" do
     loc = { 1, 1 }
-    {:ok, game} = TicTacToe.start |> TicTacToe.claim(loc, :x)
+    {:ok, game} = TicTacToe.start |> TicTacToe.claim(loc)
     refute TicTacToe.blank?(game, loc)
   end
 
   test "a previously claimed spot cannot be claimed" do
     loc = {1, 0}
-    {:ok, game} = TicTacToe.start |> TicTacToe.claim(loc, :x)
-    assert {:error, game} == TicTacToe.claim(game, loc, :o)
+    {:ok, game} = TicTacToe.start |> TicTacToe.claim(loc)
+    assert {:error, game} == TicTacToe.claim(game, loc)
   end
 
   test "a board with blank locations is not a cat's game" do

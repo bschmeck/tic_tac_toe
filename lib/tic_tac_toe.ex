@@ -1,7 +1,8 @@
 defmodule TicTacToe do
   defmodule Game do
     defstruct board: {:blank, :blank, :blank, :blank, :blank, :blank, :blank, :blank, :blank},
-              dimension: 3
+              dimension: 3,
+              turn: :x
   end
 
   def start, do: %Game{}
@@ -50,9 +51,16 @@ defmodule TicTacToe do
     get_mark_at(game, {x, y}) == :blank
   end
 
-  def claim(game, {x, y}, mark) do
+  def claim(game, {x, y}) do
     if blank?(game, {x, y}) do
-      {:ok, set_mark_at(game, {x, y}, mark)}
+      next_turn = if game.turn == :x do
+        :o
+      else
+        :x
+      end
+      game = %Game{ set_mark_at(game, {x, y}, game.turn) | turn: next_turn}
+      
+      {:ok, game}
     else
       {:error, game}
     end
@@ -70,6 +78,6 @@ defmodule TicTacToe do
 
   defp set_mark_at(game, {x, y}, mark) do
     index = x * game.dimension + y
-    %Game{game | board: put_elem(game.board, index, mark) }
+    %Game{game | board: put_elem(game.board, index, mark)}
   end
 end
