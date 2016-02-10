@@ -68,6 +68,11 @@ defmodule TicTacToe.Game do
     Enum.flat_map(range, fn(x) -> Enum.map(range, fn(y) -> {x, y} end) end)
   end
 
+  def rows(%Game{dimension: dimension} = game) do
+    range = 0..(dimension - 1)
+    Enum.map(range, fn(x) -> Enum.map(range, fn(y) -> get_mark_at(game, {x, y}) end) end)
+  end
+
   defp get_mark_at(%Game{board: board, dimension: dimension}, {x, y}) do
     index = x * dimension + y
     elem(board, index)

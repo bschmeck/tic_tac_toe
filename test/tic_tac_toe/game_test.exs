@@ -56,4 +56,9 @@ defmodule TicTacToe.GameTest do
     assert Game.cats_game?(game)
     assert Game.game_over?(game)
   end
+
+  test "rows returns each row from the board" do
+    rows = %Game{ board: {:x, :x, :o, :o, :o, :x, :x, :blank, :x} } |> Game.rows
+    assert rows == [[:x, :x, :o], [:o, :o, :x], [:x, :blank, :x]]
+  end
 end
