@@ -1,23 +1,10 @@
 defmodule TicTacToe.GameTest do
   use ExUnit.Case
   doctest TicTacToe.Game
-  alias TicTacToe.Game
+  alias TicTacToe.{Board, Game}
 
   test "a new game is not over" do
     refute Game.start |> Game.game_over?
-  end
-
-  test "all spots are blank on a new board" do
-    game = Game.start
-    assert game |>
-      Game.locations |>
-      Enum.all?(fn(loc) -> Game.blank? game, loc end)
-  end
-
-  test "after claiming, a spot is not blank" do
-    loc = { 1, 1 }
-    {:ok, game} = Game.start |> Game.claim(loc)
-    refute Game.blank?(game, loc)
   end
 
   test "claiming a spot changes the next mark to be placed" do
@@ -35,30 +22,24 @@ defmodule TicTacToe.GameTest do
   end
 
   test "a board with blank locations is not a cat's game" do
-    game = %Game{board: {:x, :x, :o, :o, :x, :o, :x, :o, :blank} }
+    game = %Game{board: %Board{spots: {:x, :x, :o, :o, :x, :o, :x, :o, :blank} } }
     refute Game.cats_game?(game)
   end
 
   test "a winning board is not a cat's game" do
-    game = %Game{board: {:x, :x, :o, :o, :x, :o, :x, :o, :o} }
-    assert Game.winner(game)
+    game = %Game{board: %Board{spots: {:x, :x, :o, :o, :x, :o, :x, :o, :o} } }
+    assert Game.won?(game)
     refute Game.cats_game?(game)
   end
 
   test "a cat's game is a cat's game" do
-    game = %Game{board: {:x, :x, :o, :o, :o, :x, :x, :o, :x} }
-    refute Game.winner(game)
+    game = %Game{board: %Board{spots: {:x, :x, :o, :o, :o, :x, :x, :o, :x} } }
     assert Game.cats_game?(game)
   end
 
   test "cat's games are over" do
-    game = %Game{ board: {:x, :x, :o, :o, :o, :x, :x, :o, :x} }
+    game = %Game{ board: %Board{spots: {:x, :x, :o, :o, :o, :x, :x, :o, :x} } }
     assert Game.cats_game?(game)
     assert Game.game_over?(game)
-  end
-
-  test "rows returns each row from the board" do
-    rows = %Game{ board: {:x, :x, :o, :o, :o, :x, :x, :blank, :x} } |> Game.rows
-    assert rows == [[:x, :x, :o], [:o, :o, :x], [:x, :blank, :x]]
   end
 end
