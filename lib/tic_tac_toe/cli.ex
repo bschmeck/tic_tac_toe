@@ -14,14 +14,10 @@ defmodule TicTacToe.CLI do
   end
 
   def get_move do
-    [x, y] = IO.gets("Move: ")
+    IO.gets("Move: ")
     |> String.rstrip
-    |> String.split
-    |> Enum.map(fn(s) ->
-      {i, _} = Integer.parse(s)
-      i - 1
-    end)
-    {x, y}
+    |> String.upcase
+    |> location_from_input
   end
 
   def print_board(game) do
@@ -47,5 +43,15 @@ defmodule TicTacToe.CLI do
   defp cell_to_s(_), do: "   "
   defp index_to_s(i), do: " #{i} "
 
-  defp header_row, do: "    1   2   3"
+  defp header_row, do: "    A   B   C"
+
+  defp location_from_input("A1"), do: { 0, 0 }
+  defp location_from_input("A2"), do: { 1, 0 }
+  defp location_from_input("A3"), do: { 2, 0 }
+  defp location_from_input("B1"), do: { 0, 1 }
+  defp location_from_input("B2"), do: { 1, 1 }
+  defp location_from_input("B3"), do: { 2, 1 }
+  defp location_from_input("C1"), do: { 0, 2 }
+  defp location_from_input("C2"), do: { 1, 2 }
+  defp location_from_input("C3"), do: { 2, 2 }
 end
