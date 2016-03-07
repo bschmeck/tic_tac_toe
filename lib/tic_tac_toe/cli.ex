@@ -25,21 +25,27 @@ defmodule TicTacToe.CLI do
   end
 
   def print_board(game) do
+    IO.puts header_row
     game.board
     |> Board.rows
+    |> Enum.with_index(1)
     |> Enum.map(&(row_to_s(&1)))
     |> Enum.join(row_separator)
     |> IO.puts
   end
 
-  defp row_to_s(row) do
-    row |> Enum.map(&(cell_to_s(&1))) |> Enum.join(cell_separator)
+  defp row_to_s({row, index}) do
+    cells = row |> Enum.map(&(cell_to_s(&1))) |> Enum.join(cell_separator)
+    "#{index_to_s(index)}#{cells}"
   end
 
-  defp row_separator, do: "\n---|---|---\n"
+  defp row_separator, do: "\n   ---+---+---\n"
   defp cell_separator, do: "|"
 
   defp cell_to_s(:x), do: " X "
   defp cell_to_s(:o), do: " O "
   defp cell_to_s(_), do: "   "
+  defp index_to_s(i), do: " #{i} "
+
+  defp header_row, do: "    1   2   3"
 end
