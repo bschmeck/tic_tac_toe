@@ -25,7 +25,11 @@ defmodule TicTacToe.CLI do
   end
 
   def print_board(game) do
-    IO.puts(Board.rows(game.board) |> Enum.map(&(row_to_s(&1))) |> Enum.join(row_separator))
+    game.board
+    |> Board.rows
+    |> Enum.map(&(row_to_s(&1)))
+    |> Enum.join(row_separator)
+    |> IO.puts
   end
 
   defp row_to_s(row) do
