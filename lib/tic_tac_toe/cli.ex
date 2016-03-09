@@ -3,21 +3,33 @@ defmodule TicTacToe.CLI do
 
   def loop(game) do
     print_board(game)
-    move = get_move
-    {:ok, game} = Game.claim game, move
     if Game.game_over? game do
-      print_board(game)
       IO.puts "GAME OVER"
     else
-      loop(game)
+      move = get_move
+      IO.puts
+      case Game.claim(game, move) do
+        {:ok, game} ->
+          loop(game)
+        {:error, game} ->
+          IO.puts "Unable to make that move."
+          loop(game)
+      end
     end
   end
 
   def get_move do
-    IO.gets("Move: ")
+    case IO.gets("Move: ")
     |> String.rstrip
     |> String.upcase
-    |> location_from_input
+    |> location_from_input do
+
+      {:ok, move} -> move
+      
+      {:error} ->
+        IO.puts "Invalid move."
+        get_move
+    end
   end
 
   def print_board(game) do
@@ -45,13 +57,14 @@ defmodule TicTacToe.CLI do
 
   defp header_row, do: "    A   B   C"
 
-  defp location_from_input("A1"), do: { 0, 0 }
-  defp location_from_input("A2"), do: { 1, 0 }
-  defp location_from_input("A3"), do: { 2, 0 }
-  defp location_from_input("B1"), do: { 0, 1 }
-  defp location_from_input("B2"), do: { 1, 1 }
-  defp location_from_input("B3"), do: { 2, 1 }
-  defp location_from_input("C1"), do: { 0, 2 }
-  defp location_from_input("C2"), do: { 1, 2 }
-  defp location_from_input("C3"), do: { 2, 2 }
+  defp location_from_input("A1"), do: {:ok, { 0, 0 } }
+  defp location_from_input("A2"), do: {:ok, { 1, 0 } }
+  defp location_from_input("A3"), do: {:ok, { 2, 0 } }
+  defp location_from_input("B1"), do: {:ok, { 0, 1 } }
+  defp location_from_input("B2"), do: {:ok, { 1, 1 } }
+  defp location_from_input("B3"), do: {:ok, { 2, 1 } }
+  defp location_from_input("C1"), do: {:ok, { 0, 2 } }
+  defp location_from_input("C2"), do: {:ok, { 1, 2 } }
+  defp location_from_input("C3"), do: {:ok, { 2, 2 } }
+  defp location_from_input(_), do: {:error}
 end
