@@ -7,7 +7,7 @@ defmodule TicTacToe.CLI do
       IO.puts "GAME OVER"
     else
       move = get_move
-      IO.puts
+      IO.puts ""
       case Game.claim(game, move) do
         {:ok, game} ->
           loop(game)
@@ -20,16 +20,25 @@ defmodule TicTacToe.CLI do
 
   def get_move do
     case IO.gets("Move: ")
-    |> String.rstrip
-    |> String.upcase
-    |> location_from_input do
+         |> normalize_input
+         |> location_from_input do
 
-      {:ok, move} -> move
+           {:ok, move} -> move
       
-      {:error} ->
-        IO.puts "Invalid move."
-        get_move
-    end
+           {:error} ->
+               IO.puts "Invalid move."
+               get_move
+         end
+  end
+
+  def normalize_input(string) do
+    string
+    |> String.rstrip
+    |> String.replace(" ", "")
+    |> String.upcase
+    |> String.codepoints
+    |> Enum.sort
+    |> Enum.join
   end
 
   def print_board(game) do
@@ -57,14 +66,14 @@ defmodule TicTacToe.CLI do
 
   defp header_row, do: "    A   B   C"
 
-  defp location_from_input("A1"), do: {:ok, { 0, 0 } }
-  defp location_from_input("A2"), do: {:ok, { 1, 0 } }
-  defp location_from_input("A3"), do: {:ok, { 2, 0 } }
-  defp location_from_input("B1"), do: {:ok, { 0, 1 } }
-  defp location_from_input("B2"), do: {:ok, { 1, 1 } }
-  defp location_from_input("B3"), do: {:ok, { 2, 1 } }
-  defp location_from_input("C1"), do: {:ok, { 0, 2 } }
-  defp location_from_input("C2"), do: {:ok, { 1, 2 } }
-  defp location_from_input("C3"), do: {:ok, { 2, 2 } }
+  defp location_from_input("1A"), do: {:ok, { 0, 0 } }
+  defp location_from_input("2A"), do: {:ok, { 1, 0 } }
+  defp location_from_input("3A"), do: {:ok, { 2, 0 } }
+  defp location_from_input("1B"), do: {:ok, { 0, 1 } }
+  defp location_from_input("2B"), do: {:ok, { 1, 1 } }
+  defp location_from_input("3B"), do: {:ok, { 2, 1 } }
+  defp location_from_input("1C"), do: {:ok, { 0, 2 } }
+  defp location_from_input("2C"), do: {:ok, { 1, 2 } }
+  defp location_from_input("3C"), do: {:ok, { 2, 2 } }
   defp location_from_input(_), do: {:error}
 end
