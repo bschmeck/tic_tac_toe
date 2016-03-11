@@ -1,19 +1,25 @@
 defmodule TicTacToe.CLI do
-  alias TicTacToe.{Board, CLI, Game}
+  alias TicTacToe.{Board, Server}
 
-  def loop(game) do
-    print_board(game)
-    if Game.game_over? game do
+  def play do
+    {:ok, server} = Server.start
+    loop(server)
+  end
+
+  def loop(server) do
+    server |> Server.get_board |> print_board
+
+    if Server.game_over? server do
       IO.puts "GAME OVER"
     else
       move = get_move
       IO.puts ""
-      case Game.claim(game, move) do
-        {:ok, game} ->
-          loop(game)
-        {:error, game} ->
-          IO.puts "Unable to make that move."
-          loop(game)
+      case Server.claim(server, move) do
+        {:ok, _} ->
+          loop(server)
+        {:error, message} ->
+          IO.puts message
+          loop(server)
       end
     end
   end
@@ -41,9 +47,9 @@ defmodule TicTacToe.CLI do
     |> Enum.join
   end
 
-  def print_board(game) do
+  def print_board(board) do
     IO.puts header_row
-    game.board
+    board
     |> Board.rows
     |> Enum.with_index(1)
     |> Enum.map(&(row_to_s(&1)))

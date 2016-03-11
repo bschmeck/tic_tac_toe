@@ -16,8 +16,12 @@ defmodule TicTacToe.Server do
     end
   end
 
-  def handle_call({:game_over?}, game) do
+  def handle_call({:game_over?}, _, game) do
     {:reply, Game.game_over?(game), game}
+  end
+
+  def handle_call({:get_board}, _, game) do
+    {:reply, game.board, game}
   end
 
   def start do
@@ -30,5 +34,9 @@ defmodule TicTacToe.Server do
 
   def game_over?(pid) do
     GenServer.call(pid, {:game_over?})
+  end
+
+  def get_board(pid) do
+    GenServer.call(pid, {:get_board})
   end
 end
