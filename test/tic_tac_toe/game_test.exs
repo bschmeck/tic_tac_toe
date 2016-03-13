@@ -42,4 +42,57 @@ defmodule TicTacToe.GameTest do
     assert Game.cats_game?(game)
     assert Game.game_over?(game)
   end
+
+  test "watch adds the given pid to the game's watchers" do
+    game = %Game{}
+    {:ok, game} = Game.watch(game, self)
+    assert Enum.member?(game.watchers, self)
+  end
+
+  test "when player_x is unassigned, join assigns the given pid to player_x" do
+    game = %Game{}
+    {:ok, %Game{player_x: pid}} = Game.join(game, self)
+    assert pid == self
+  end
+
+  test "when player_x is assigned, join will not assign the same pid to player_o" do
+    game = %Game{}
+    {:ok, game} = Game.join(game, self)
+    {:ok, %Game{player_x: x_pid, player_o: o_pid}} = Game.join(game, self)
+    assert x_pid == self
+    assert o_pid == nil
+  end
+
+  test "when player_x is assigned, join will assign a new pid to player_o" do
+    game = %Game{}
+    {:ok, game} = Game.join(game, self)
+    pid = spawn fn -> 1 end
+    {:ok, %Game{player_x: x_pid, player_o: o_pid}} = Game.join(game, pid)
+    assert x_pid == self
+    assert o_pid == pid
+  end
+
+  test "when player_x and player_o are assigned, join will not assign a new pid" do
+    game = %Game{}
+    {:ok, game} = Game.join(game, self)
+    pid = spawn fn -> 1 end
+    {:ok, game} = Game.join(game, pid)
+    pid2 = spawn fn -> 2 end
+    {result, _} = Game.join(game, pid2)
+    assert result == :error
+  end
+
+  test "join adds player_x to the watchers list" do
+    game = %Game{}
+    {:ok, %Game{watchers: watchers}} = Game.join(game, self)
+    assert Enum.member?(watchers, self)
+  end
+
+  test "join adds player_o to the watchers list" do
+    game = %Game{}
+    {:ok, game} = Game.join(game, self)
+    pid = spawn fn -> 1 end
+    {:ok, %Game{watchers: watchers}} = Game.join(game, pid)
+    assert Enum.member?(watchers, pid)
+  end
 end

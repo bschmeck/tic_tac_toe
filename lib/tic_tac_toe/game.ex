@@ -2,7 +2,10 @@ defmodule TicTacToe.Game do
   alias TicTacToe.{Board, Game}
 
   defstruct board: %Board{},
-            turn: :x
+            turn: :x,
+            watchers: [],
+            player_x: nil,
+            player_o: nil
   
   def start, do: %Game{}
 
@@ -31,4 +34,18 @@ defmodule TicTacToe.Game do
       {:error, game}
     end
   end
+
+  def watch(game, pid), do: {:ok, %Game{ game | watchers: [pid | game.watchers] } }
+
+  def join(%Game{player_x: nil} = game, pid) do
+    game = %Game{ game | player_x: pid }
+    watch(game, pid)
+  end
+  def join(%Game{player_x: pid} = game, pid), do: {:ok, game}
+  def join(%Game{player_x: _other, player_o: nil} = game, pid) do
+    game = %Game{ game | player_o: pid }
+    watch(game, pid)
+  end
+  def join(%Game{player_x: _other, player_o: pid} = game, pid), do: {:ok, game}
+  def join(%Game{player_x: _other, player_o: _other2} = game, _pid), do: {:error, "Both players already joined"}  
 end

@@ -24,6 +24,29 @@ defmodule TicTacToe.Server do
     {:reply, game.board, game}
   end
 
+  def handle_call({:join}, {pid, _ref}, game) do
+    case Game.join(game, pid) do
+      {:ok, %Game{player_x: ^pid} = game} ->
+        {:reply, :x, game}
+      {:ok, %Game{player_o: ^pid} = game} ->
+        {:reply, :o, game}
+      {:error, message} ->
+        {:reply, {:error, message}, game}
+    end
+  end
+
+  def handle_call({:whoami?}, {pid, _ref}, %Game{player_x: pid} = game) do
+    {:reply, :x, game}
+  end
+
+  def handle_call({:whoami?}, {pid, _ref}, %Game{player_o: pid} = game) do
+    {:reply, :o, game}
+  end
+
+  def handle_call({:whoami?}, _, game) do
+    {:reply, :nobody, game}
+  end
+
   def start do
     GenServer.start(Server, nil)
   end
@@ -38,5 +61,13 @@ defmodule TicTacToe.Server do
 
   def get_board(pid) do
     GenServer.call(pid, {:get_board})
+  end
+
+  def join(pid) do
+    GenServer.call(pid, {:join})
+  end
+
+  def whoami?(pid) do
+    GenServer.call(pid, {:whoami?})
   end
 end
