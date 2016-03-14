@@ -7,13 +7,19 @@ defmodule TicTacToe.Server do
     { :ok, %Game{} }
   end
 
-  def handle_call({:claim, location}, _, game) do
+  def handle_call({:claim, location}, {pid, _ref}, %Game{player_x: x_pid, player_o: o_pid, turn: turn} = game) when (pid == x_pid and turn == :x) or (pid == o_pid and turn == :o) do
     case Game.claim(game, location) do
       {:ok, game} ->
         {:reply, {:ok, game}, game}
       {:error, game} ->
         {:reply, {:error, "Unable to make that move"}, game}
     end
+  end
+  def handle_call({:claim, _location}, {pid, _ref}, %Game{player_o: o_pid, player_x: x_pid} = game) when pid == x_pid or pid == o_pid do
+    {:reply, {:error, "Not your turn"}, game}
+  end
+  def handle_call({:claim, _location}, _, game) do
+    {:reply, {:error, "Not your game"}, game}
   end
 
   def handle_call({:game_over?}, _, game) do

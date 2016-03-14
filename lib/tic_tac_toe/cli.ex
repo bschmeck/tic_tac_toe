@@ -3,6 +3,7 @@ defmodule TicTacToe.CLI do
 
   def play do
     {:ok, server} = Server.start
+    Server.join(server)
     loop(server)
   end
 
