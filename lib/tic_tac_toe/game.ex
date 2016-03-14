@@ -47,5 +47,5 @@ defmodule TicTacToe.Game do
     watch(game, pid)
   end
   def join(%Game{player_x: _other, player_o: pid} = game, pid), do: {:ok, game}
-  def join(%Game{player_x: _other, player_o: _other2} = game, _pid), do: {:error, "Both players already joined"}  
+  def join(%Game{player_x: _other, player_o: _other2}, _pid), do: {:error, "Both players already joined"}
 end
