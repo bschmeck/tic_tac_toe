@@ -53,6 +53,12 @@ defmodule TicTacToe.Server do
     {:reply, :nobody, game}
   end
 
+
+  def handle_cast({:inspect}, game) do
+    IO.inspect game
+    {:noreply, game}
+  end
+
   def start do
     GenServer.start(Server, nil)
   end
@@ -75,5 +81,9 @@ defmodule TicTacToe.Server do
 
   def whoami?(pid) do
     GenServer.call(pid, {:whoami?})
+  end
+
+  def inspect(pid) do
+    GenServer.cast(pid, {:inspect})
   end
 end
